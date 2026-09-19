@@ -17,13 +17,21 @@ pipeline {
             }
         }
 
-        stage('2. DevSecOps Security Scan (Trivy)') {
+        stage('2. SonarQube Code Analysis') {
+            steps {
+                dir('app') {
+                    sh 'sonar-scanner -Dsonar.projectKey=aws-multi-env-devops-platform -Dsonar.host.url=http://localhost:9000 || true'
+                }
+            }
+        }
+
+        stage('3. DevSecOps Security Scan (Trivy)') {
             steps {
                 sh 'trivy fs --severity HIGH,CRITICAL app/'
             }
         }
 
-        stage('3. Docker Build & Tag') {
+        stage('4. Docker Build & Tag') {
             steps {
                 dir('app') {
                     sh "docker build -t ${REGISTRY_USER}/${DOCKER_IMAGE}:${BUILD_TAG} ."
@@ -32,13 +40,13 @@ pipeline {
             }
         }
 
-        stage('4. Docker Container Scan') {
+        stage('5. Docker Container Scan') {
             steps {
                 sh "trivy image --severity HIGH,CRITICAL ${REGISTRY_USER}/${DOCKER_IMAGE}:${BUILD_TAG}"
             }
         }
 
-        stage('5. Push to Image Registry') {
+        stage('6. Push to Image Registry') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
                     sh 'echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin'
@@ -48,7 +56,7 @@ pipeline {
             }
         }
 
-        stage('6. Deploy to Dev Environment') {
+        stage('7. Deploy to Dev Environment') {
             steps {
                 sh 'kubectl create namespace dev --dry-run=client -o yaml | kubectl apply -f -'
                 sh 'kubectl apply -k app/k8s/overlays/dev'
@@ -57,7 +65,7 @@ pipeline {
             }
         }
 
-        stage('7. Deploy to Staging Environment') {
+        stage('8. Deploy to Staging Environment') {
             steps {
                 sh 'kubectl create namespace staging --dry-run=client -o yaml | kubectl apply -f -'
                 sh 'kubectl apply -k app/k8s/overlays/staging'
