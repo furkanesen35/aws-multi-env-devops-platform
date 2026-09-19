@@ -11,7 +11,7 @@ pipeline {
         stage('1. Code Analysis & Test') {
             steps {
                 dir('app') {
-                    sh 'python3 -m pip install -r requirements.txt'
+                    sh 'python3 -m pip install -r requirements.txt --break-system-packages'
                     sh 'python3 -m unittest discover -s . -p "*_test.py" || true'
                 }
             }
