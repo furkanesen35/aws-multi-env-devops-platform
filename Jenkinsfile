@@ -51,6 +51,7 @@ pipeline {
         stage('6. Deploy to Dev Environment') {
             steps {
                 sh 'kubectl apply -k app/k8s/overlays/dev'
+                sh "kubectl -n dev set image deployment/dev-app-deployment devops-app=${REGISTRY_USER}/${DOCKER_IMAGE}:${BUILD_TAG}"
                 sh 'kubectl rollout status deployment/dev-app-deployment -n dev'
             }
         }
@@ -61,6 +62,7 @@ pipeline {
             }
             steps {
                 sh 'kubectl apply -k app/k8s/overlays/staging'
+                sh "kubectl -n staging set image deployment/staging-app-deployment devops-app=${REGISTRY_USER}/${DOCKER_IMAGE}:${BUILD_TAG}"
                 sh 'kubectl rollout status deployment/staging-app-deployment -n staging'
             }
         }
