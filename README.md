@@ -1,1 +1,0 @@
-# aws-multi-env-devops-platform

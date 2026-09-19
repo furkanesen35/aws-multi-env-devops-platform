@@ -1,0 +1,14 @@
+# Terraform geçici ve binary dosyaları
+**/.terraform/
+*.tfstate
+*.tfstate.*
+tfplan
+
+# Python önbellek dosyaları
+__pycache__/
+*.pyc
+
+# IDE ve sistem dosyaları
+.vscode/
+.idea/
+.DS_Store
