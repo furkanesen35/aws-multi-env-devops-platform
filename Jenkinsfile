@@ -58,9 +58,6 @@ pipeline {
         }
 
         stage('7. Deploy to Staging Environment') {
-            when {
-                branch 'main'
-            }
             steps {
                 sh 'kubectl create namespace staging --dry-run=client -o yaml | kubectl apply -f -'
                 sh 'kubectl apply -k app/k8s/overlays/staging'
