@@ -15,6 +15,9 @@ RUN apt-get update \
     && chmod +x /usr/local/bin/kubectl \
     && rm -rf /var/lib/apt/lists/*
 
+COPY jenkins/start.sh /usr/local/bin/jenkins-start.sh
+RUN chmod +x /usr/local/bin/jenkins-start.sh
+
 ENV TRIVY_CACHE_DIR=/var/jenkins_home/.cache/trivy
 
 USER jenkins
