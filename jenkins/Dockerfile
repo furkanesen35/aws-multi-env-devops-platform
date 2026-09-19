@@ -3,7 +3,7 @@ FROM jenkins/jenkins:lts-jdk17
 USER root
 
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends ca-certificates curl gnupg \
+    && apt-get install -y --no-install-recommends ca-certificates curl docker-cli gnupg python3 python3-pip \
     && mkdir -p /etc/apt/keyrings \
     && curl -fsSL https://aquasecurity.github.io/trivy-repo/deb/public.key \
         | gpg --dearmor -o /etc/apt/keyrings/trivy.gpg \
